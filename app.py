@@ -19,6 +19,17 @@ import requests
 from azure.core.credentials import AzureKeyCredential
 from azure.ai.language.questionanswering import QuestionAnsweringClient
 
+# OPENAI API Key初始化設定
+endpoint = os.getenv('END_POINT')
+open_ai_api_key = os.getenv('OpenAI_API_KEY')
+open_ai_endpoint = os.getenv('OpenAI_ENDPOINT')
+deployment_name = os.getenv('OpenAI_DEPLOY_NAME')
+openai.api_base = open_ai_endpoint
+headers = {
+    "Content-Type": "application/json",
+    "api-key": open_ai_api_key,
+}
+
 app = Flask(__name__)
 static_tmp_path = os.path.join(os.path.dirname(__file__), 'static', 'tmp')
 # Channel Access Token
@@ -88,7 +99,8 @@ def Chatgpt_response(prompt):
     else:
         # Print the error if the request was unsuccessful
         print(f"Error {response.status_code}: {response.text}")
-        
+
+
 # 處理訊息
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
