@@ -60,7 +60,35 @@ def callback():
         abort(400)
     return 'OK'
 
+def Chatgpt_response(prompt):   
 
+    # Define the payload for the request
+    # You can modify the system message and the user prompt as needed
+    payload = {
+        "model": "gpt-4o-mini",  # You can switch between "gpt-4" or "gpt-3.5-turbo"
+        "messages": [
+            {"role": "system", "content": "You are a helpful assistant."},  # Context setting
+            {"role": "user", "content": prompt}  # Replace with your actual prompt
+        ],
+        "temperature": 0.7,  # Modify this value to adjust the creativity level of the model
+        "max_tokens": 1000,  # Control the length of the response
+        "top_p": 1.0,
+        "frequency_penalty": 0.0,
+        "presence_penalty": 0.0
+    }
+    
+    # Send the request to OpenAI's API
+    response = requests.post(open_ai_endpoint, headers=headers, json=payload)
+    
+    # Check if the request was successful
+    if response.status_code == 200:
+        # Parse and print the response from GPT
+        result = response.json()
+        return result['choices'][0]['message']['content']
+    else:
+        # Print the error if the request was unsuccessful
+        print(f"Error {response.status_code}: {response.text}")
+        
 # 處理訊息
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
@@ -71,6 +99,9 @@ def handle_message(event):
         print(QA_answer)
         if QA_answer!='No good match found in KB':
             line_bot_api.reply_message(event.reply_token, TextSendMessage(QA_answer))
+        else:
+             QA_answer = Chatgpt_response(msg)
+             line_bot_api.reply_message(event.reply_token, TextSendMessage(QA_answer))
     except:
         print(traceback.format_exc())
         line_bot_api.reply_message(event.reply_token, TextSendMessage('QA Error'))
