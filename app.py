@@ -32,7 +32,6 @@ handler = WebhookHandler(os.getenv('CHANNEL_SECRET'))
 
 
 # OPENAI API Key初始化設定
-endpoint = os.getenv('END_POINT')
 open_ai_api_key = os.getenv('OpenAI_API_KEY')
 open_ai_endpoint = os.getenv('OpenAI_ENDPOINT')
 deployment_name = os.getenv('OpenAI_DEPLOY_NAME')
@@ -46,6 +45,7 @@ headers = {
 credential = AzureKeyCredential(os.getenv('AZURE_KEY'))
 knowledge_base_project = os.getenv('PROJECT')
 deployment = 'production'
+endpoint = os.getenv('END_POINT')
 
 # 連接Azure Language Studio，查詢知識庫
 def QA_response(text):
